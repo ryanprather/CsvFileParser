@@ -35,7 +35,6 @@ namespace CsvDataParser.Test
             endpoints.Add(new DataEndpoint { DataType = typeof(double), Index = 3, Name = "DecimalValue" });
             endpoints.Add(new DataEndpoint { DataType = typeof(float), Index = 4, Name = "FloatValue" });
             endpoints.Add(new DataEndpoint { DataType = typeof(bool), Index = 5, Name = "BoolValue" });
-
             return new TimeSeriesDatasetMapDefinition(
                 timestampColumn: new DataEndpoint() { DataType = typeof(DateTime), Index = 0, Name = "Date" },
                 keyColumn: new DataEndpoint() { DataType = typeof(string), Index = 1, Name = "Email" },
