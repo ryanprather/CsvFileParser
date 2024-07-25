@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CsvParser.Models
 {
@@ -14,6 +16,8 @@ namespace CsvParser.Models
             HasHeader = hasHeader;
         }
 
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool HasHeader { get; set; }
 
         public DataEndpoint TimestampColumn { get; set; }
