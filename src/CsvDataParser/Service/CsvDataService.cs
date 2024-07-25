@@ -2,10 +2,7 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using FluentResults;
-using Newtonsoft.Json.Linq;
 using System.Globalization;
-using System.Net;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("CsvDataParser.Test")]

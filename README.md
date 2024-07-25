@@ -9,7 +9,7 @@ TimeSeriesDatasetMapDefinition(DataEndpoint timestampColumn, DataEndpoint keyCol
  - DataEndpoints objects are what is used to define the columns in your csv. 
     - **Name** refers to the text value for the name of header of column. *(if your csv has headers)*
     - **DataType** .net datatype you wish to have the value parsed into. 
-        - accepted datatypes (System.Bool, System.Single, System.Double, System.Int32)
+        - accepted datatypes (System.Boolean, System.Single, System.Double, System.Int32)
     - **Index** is a zero based index for when the csv doesn't have a header 
  ```
  public class DataEndpoint
@@ -81,6 +81,10 @@ using (StreamReader r = new StreamReader(path to where ever))
     return JsonConvert.DeserializeObject<TimeSeriesDatasetMapDefinition>(json);
 }
 ```
+## Execution
+- In order to process the file can be done by contructing the object
+```var service = new CsvDataService(timeSeriesDatasetMapDefinition, csvFilePath);```
+- Then executing the ```var dataResult = service.RetrieveFlatCsvData();```
 
 ## Outputs
-TODO
+- TODO

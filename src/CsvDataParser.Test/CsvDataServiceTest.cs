@@ -1,10 +1,7 @@
 using AutoFixture.Xunit2;
 using CsvDataParser.Models;
 using CsvDataParser.Service;
-using CsvHelper;
 using FluentAssertions;
-using Moq;
-using System.ComponentModel.DataAnnotations;
 
 namespace CsvDataParser.Test
 {
