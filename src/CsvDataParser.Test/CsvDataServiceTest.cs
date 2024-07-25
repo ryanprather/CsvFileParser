@@ -1,10 +1,7 @@
 using AutoFixture.Xunit2;
-using CsvDataParser.Models;
-using CsvDataParser.Service;
+using CsvParser.Models;
+using CsvParser.Service;
 using FluentAssertions;
-using System.Net;
-using Xunit.Sdk;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CsvDataParser.Test
 {

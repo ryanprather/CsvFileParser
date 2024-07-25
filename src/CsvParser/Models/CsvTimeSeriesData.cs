@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsvDataParser.Models
+namespace CsvParser.Models
 {
-    public class CsvTimeSeriesFlatData
+    public class CsvTimeSeriesData
     {
-        public CsvTimeSeriesFlatData(DateTime timestamp, string key) 
+        public CsvTimeSeriesData(DateTime timestamp, string key)
         {
             Timestamp = timestamp;
             Key = key;

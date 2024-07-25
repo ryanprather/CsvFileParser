@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace CsvDataParser.Models
+namespace CsvParser.Models
 {
     public class DataEndpoint
     {
         public string Name { get; set; }
         public Type DataType { get; set; }
-        public int? Index {  get; set; } 
+        public int? Index { get; set; }
     }
 }

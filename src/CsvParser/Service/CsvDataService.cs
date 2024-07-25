@@ -1,4 +1,4 @@
-﻿using CsvDataParser.Models;
+﻿using CsvParser.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using FluentResults;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("CsvDataParser.Test")]
-namespace CsvDataParser.Service
+namespace CsvParser.Service
 {
     public class CsvDataService : ICsvDataService
     {
@@ -24,7 +24,7 @@ namespace CsvDataParser.Service
 
         public CsvDataService() { }
 
-        public IEnumerable<Result<CsvTimeSeriesFlatData>> RetrieveDataFromFile(TimeSeriesDatasetMapDefinition fileMap, string dataFileLocation)
+        public IEnumerable<Result<CsvTimeSeriesData>> RetrieveDataFromFile(TimeSeriesDatasetMapDefinition fileMap, string dataFileLocation)
         {
             var fileExistsResult = FileExsits(dataFileLocation);
             if (!fileExistsResult.IsSuccess)
@@ -63,7 +63,7 @@ namespace CsvDataParser.Service
                     if (hasBreakingError)
                         yield break;
 
-                    var tsd = new CsvTimeSeriesFlatData(dateTimeComlumnResult.Value, keyColumnValue);
+                    var tsd = new CsvTimeSeriesData(dateTimeComlumnResult.Value, keyColumnValue);
                     foreach (var endpoint in fileMap.Endpoints)
                     {
                         if (endpoint.DataType == typeof(Int32))
@@ -219,12 +219,9 @@ namespace CsvDataParser.Service
         internal class ErrorMessages
         {
             public static readonly string FileNotFound = "File Not Found";
-
             public static readonly string InvalidTimestampColumn = "Invalid Data Type for Timestamp Column";
-            //public static readonly string NullMappingErrorMessage = "Mapping could not be loaded";
             public static readonly string MissingTimestampColumn = "Timestamp column could not be found or parsed";
             public static readonly string MissingKeyColumn = "Key column could not be found or parsed";
-
 
             public static string MissingIndexProperty(string columnName) => $"Column {columnName} must have an index set when HasHeader row is false";
             public static string EndpointColumnParse(string endpointname) => $"Could not be found or the value could not be parsed {endpointname} into datatype";

@@ -1,12 +1,12 @@
-﻿using CsvDataParser.Models;
+﻿using CsvParser.Models;
 using FluentResults;
 using System.Collections.Generic;
 
-namespace CsvDataParser.Service
+namespace CsvParser.Service
 {
     public interface ICsvDataService
     {
         Result ValidateFileMap(TimeSeriesDatasetMapDefinition fileMap);
-        IEnumerable<Result<CsvTimeSeriesFlatData>> RetrieveDataFromFile(TimeSeriesDatasetMapDefinition fileMap, string dataFileLocation);
+        IEnumerable<Result<CsvTimeSeriesData>> RetrieveDataFromFile(TimeSeriesDatasetMapDefinition fileMap, string dataFileLocation);
     }
 }
