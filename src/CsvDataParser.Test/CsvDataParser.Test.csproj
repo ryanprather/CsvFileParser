@@ -51,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvParser\CsvParser.csproj" />
+    <ProjectReference Include="..\CsvParser\CsvParser.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

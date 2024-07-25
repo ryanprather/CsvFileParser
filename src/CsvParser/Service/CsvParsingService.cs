@@ -1,5 +1,4 @@
-﻿using CsvParser.Models;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FluentResults;
 using System;
@@ -8,21 +7,22 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using CsvParser.Lib.Models;
 
 [assembly: InternalsVisibleTo("CsvDataParser.Test")]
-namespace CsvParser.Service
+namespace CsvParser.Lib.Service
 {
-    public class CsvDataService : ICsvDataService
+    public class CsvParsingService : ICsvParsingService
     {
         private static List<Type> SupportedDataTypes = new List<Type>()
         {
-            typeof(System.Double),
-            typeof(System.Single),
-            typeof(System.Int32),
-            typeof(System.Boolean),
+            typeof(double),
+            typeof(float),
+            typeof(int),
+            typeof(bool),
         };
 
-        public CsvDataService() { }
+        public CsvParsingService() { }
 
         public IEnumerable<Result<CsvTimeSeriesData>> RetrieveDataFromFile(TimeSeriesDatasetMapDefinition fileMap, string dataFileLocation)
         {
@@ -66,7 +66,7 @@ namespace CsvParser.Service
                     var tsd = new CsvTimeSeriesData(dateTimeComlumnResult.Value, keyColumnValue);
                     foreach (var endpoint in fileMap.Endpoints)
                     {
-                        if (endpoint.DataType == typeof(Int32))
+                        if (endpoint.DataType == typeof(int))
                         {
                             var value = GetValueFromDataRow(dictionaryRow, fileMap.HasHeader, endpoint);
                             var endpointResult = GetIntColumnValue(value, endpoint);
@@ -122,7 +122,7 @@ namespace CsvParser.Service
         internal Result<bool> GetBoolColumnValue(string value, DataEndpoint endpoint)
         {
             bool boolValue;
-            if (String.IsNullOrWhiteSpace(value)
+            if (string.IsNullOrWhiteSpace(value)
                 || !bool.TryParse(value, out boolValue))
                 return Result.Fail(ErrorMessages.EndpointColumnParse(endpoint.Name));
 
@@ -132,7 +132,7 @@ namespace CsvParser.Service
         internal Result<float> GetFloatColumnValue(string value, DataEndpoint endpoint)
         {
             float floatValue;
-            if (String.IsNullOrWhiteSpace(value)
+            if (string.IsNullOrWhiteSpace(value)
                 || !float.TryParse(value, out floatValue))
                 return Result.Fail(ErrorMessages.EndpointColumnParse(endpoint.Name));
 
@@ -142,18 +142,18 @@ namespace CsvParser.Service
         internal Result<double> GetDoubleColumnValue(string value, DataEndpoint endpoint)
         {
             double doubleValue;
-            if (String.IsNullOrWhiteSpace(value)
-                || !Double.TryParse(value, out doubleValue))
+            if (string.IsNullOrWhiteSpace(value)
+                || !double.TryParse(value, out doubleValue))
                 return Result.Fail(ErrorMessages.EndpointColumnParse(endpoint.Name));
 
             return Result.Ok(doubleValue);
         }
 
-        internal Result<Int32> GetIntColumnValue(string value, DataEndpoint endpoint)
+        internal Result<int> GetIntColumnValue(string value, DataEndpoint endpoint)
         {
-            Int32 intValue;
-            if (String.IsNullOrWhiteSpace(value)
-                || !Int32.TryParse(value, out intValue))
+            int intValue;
+            if (string.IsNullOrWhiteSpace(value)
+                || !int.TryParse(value, out intValue))
                 return Result.Fail(ErrorMessages.EndpointColumnParse(endpoint.Name));
 
             return Result.Ok(intValue);
@@ -162,7 +162,7 @@ namespace CsvParser.Service
         internal Result<DateTime> GetDateTimeColumnValue(string value, DataEndpoint endpoint)
         {
             DateTime dateTimeValue;
-            if (String.IsNullOrWhiteSpace(value)
+            if (string.IsNullOrWhiteSpace(value)
                 || !DateTime.TryParse(value, out dateTimeValue))
                 return Result.Fail(ErrorMessages.EndpointColumnParse(endpoint.Name));
 
@@ -177,7 +177,7 @@ namespace CsvParser.Service
             // check timestamp column //
             if (fileMap.TimestampColumn.DataType != typeof(DateTime))
                 result.WithError(ErrorMessages.InvalidColumnDataTypeColumn(fileMap.TimestampColumn.DataType.ToString(), nameof(fileMap.TimestampColumn)));
-            if (String.IsNullOrEmpty(fileMap.TimestampColumn.Name) || String.IsNullOrWhiteSpace(fileMap.TimestampColumn.Name))
+            if (string.IsNullOrEmpty(fileMap.TimestampColumn.Name) || string.IsNullOrWhiteSpace(fileMap.TimestampColumn.Name))
                 result.WithError(ErrorMessages.InvalidColumnName(nameof(fileMap.TimestampColumn)));
             if (fileMap.HasHeader == false && fileMap.TimestampColumn.Index is null)
                 result.WithError(ErrorMessages.MissingIndexProperty(nameof(fileMap.TimestampColumn)));
@@ -186,7 +186,7 @@ namespace CsvParser.Service
             // check key column //
             if (fileMap.KeyColumn.DataType != typeof(string))
                 result.WithError(ErrorMessages.InvalidColumnDataTypeColumn(fileMap.KeyColumn.DataType.ToString(), nameof(fileMap.KeyColumn)));
-            if (String.IsNullOrEmpty(fileMap.KeyColumn.Name) || String.IsNullOrWhiteSpace(fileMap.KeyColumn.Name))
+            if (string.IsNullOrEmpty(fileMap.KeyColumn.Name) || string.IsNullOrWhiteSpace(fileMap.KeyColumn.Name))
                 result.WithError(ErrorMessages.InvalidColumnName(nameof(fileMap.KeyColumn)));
             if (fileMap.HasHeader == false && fileMap.KeyColumn.Index is null)
                 result.WithError(ErrorMessages.MissingIndexProperty(nameof(fileMap.KeyColumn)));
@@ -197,7 +197,7 @@ namespace CsvParser.Service
             {
                 if (!SupportedDataTypes.Contains(endpoint.DataType))
                     result.WithError(ErrorMessages.InvalidColumnDataTypeColumn(endpoint.DataType.ToString(), nameof(endpoint.Name)));
-                if (String.IsNullOrEmpty(endpoint.Name) || String.IsNullOrWhiteSpace(endpoint.Name))
+                if (string.IsNullOrEmpty(endpoint.Name) || string.IsNullOrWhiteSpace(endpoint.Name))
                     result.WithError(ErrorMessages.InvalidColumnNameIndex(i.ToString()));
                 if (fileMap.HasHeader == false && endpoint.Index is null)
                     result.WithError(ErrorMessages.MissingIndexProperty($"Endpoint name {endpoint.Name} at index {i}"));

@@ -1,5 +1,5 @@
-﻿using CsvParser.Models;
-using CsvParser.Service;
+﻿using CsvParser.Lib.Models;
+using CsvParser.Lib.Service;
 using Newtonsoft.Json;
 
 namespace CsvParser.Run
@@ -8,7 +8,7 @@ namespace CsvParser.Run
     {
         static void Main(string[] args)
         {
-            var csvService = new CsvDataService();
+            var csvService = new CsvParsingService();
             var jsonFilePath = @"C:\Users\ryanp\source\repos\CsvParserTest.Run\CsvParserTest.Run\Maps\TestTSDMap.json";
             var csvFilePath = @"C:\Users\ryanp\Downloads\CsvTestFile1.csv";
             var map = LoadJsonMapping(jsonFilePath);

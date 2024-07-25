@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CsvParser.Models
+namespace CsvParser.Lib.Models
 {
     public class DataEndpoint
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace CsvParser.Models
+namespace CsvParser.Lib.Models
 {
     public class TimeSeriesDatasetMapDefinition
     {

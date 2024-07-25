@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Run", "CsvParser.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvDataParser.Test", "CsvDataParser.Test\CsvDataParser.Test.csproj", "{86886078-9660-4E61-97F0-10B184636E35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvParser", "CsvParser\CsvParser.csproj", "{BCEC61BE-BF18-4A79-8939-C97A2571E023}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser.Lib", "CsvParser\CsvParser.Lib.csproj", "{BCEC61BE-BF18-4A79-8939-C97A2571E023}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

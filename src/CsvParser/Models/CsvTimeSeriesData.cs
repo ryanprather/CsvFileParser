@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsvParser.Models
+namespace CsvParser.Lib.Models
 {
     public class CsvTimeSeriesData
     {
