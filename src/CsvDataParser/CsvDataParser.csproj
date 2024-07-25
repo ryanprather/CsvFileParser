@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Csv Parser</Title>
+    <PackageProjectUrl>https://github.com/ryanprather/CsvFileParser?tab=readme-ov-file#csvfileparser</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
