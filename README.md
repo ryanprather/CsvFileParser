@@ -48,6 +48,7 @@ return new TimeSeriesDatasetMapDefinition(
 - The TimeSeriesDatasetMapDefinition can also be parsed from json like the following
 ```
 {
+    "HasHeader":true
     "TimestampColumn":{
         "Name":"Date",
         "DataType":"System.DateTime"
@@ -83,8 +84,8 @@ using (StreamReader r = new StreamReader(path to where ever))
 ```
 ## Execution
 - In order to process the file can be done by contructing the object
-```var service = new CsvDataService(timeSeriesDatasetMapDefinition, csvFilePath);```
-- Then executing the ```var dataResult = service.RetrieveFlatCsvData();```
+```new CsvParsingService();``` or the service can be dependecy injected using the interface ```Services.AddScoped<ICsvParsingService, CsvParsingService>```
+- Then executing the ```var dataResults = csvService.RetrieveDataFromFile(map, csvFilePath);```
 
 ## Outputs
 - TODO
