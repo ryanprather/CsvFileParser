@@ -1,4 +1,6 @@
-﻿namespace CsvDataParser.Models
+﻿using System;
+
+namespace CsvDataParser.Models
 {
     public class DataEndpoint
     {

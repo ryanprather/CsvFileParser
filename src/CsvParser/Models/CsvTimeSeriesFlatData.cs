@@ -1,4 +1,7 @@
-﻿namespace CsvDataParser.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace CsvDataParser.Models
 {
     public class CsvTimeSeriesFlatData
     {

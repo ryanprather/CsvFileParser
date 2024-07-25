@@ -2,16 +2,14 @@ using AutoFixture.Xunit2;
 using CsvDataParser.Models;
 using CsvDataParser.Service;
 using FluentAssertions;
+using System.Net;
+using Xunit.Sdk;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CsvDataParser.Test
 {
     public class CsvDataServiceTest
     {
-
-        public CsvDataServiceTest()
-        {
-        }
-
         private TimeSeriesDatasetMapDefinition GetSeriesDatasetMapHeaderFile()
         {
             var endpoints = new List<DataEndpoint>();
@@ -39,19 +37,55 @@ namespace CsvDataParser.Test
                 endpoints: endpoints);
         }
 
-
-        [Fact(DisplayName = "Ensure Constructor Exception When Null JsonFileMap")]
-        public void Ensure_ConstructorException_WhenNullJsonFileMap()
+        [Theory(DisplayName = "Ensure Error When File Not Found"), AutoData]
+        public void Ensure_Error_WhenFileNotFound(string fileLocation)
         {
-            Action action = () => { new CsvDataService(null, "test"); };
-            action.Should().Throw<ArgumentNullException>();
+            // arrange //
+            var map = GetSeriesDatasetMapHeaderFile();
+            var sut = new CsvDataService();
+
+            // act //
+            var result = sut.FileExsits(fileLocation);
+            
+            // assert //
+            result.IsFailed.Should().BeTrue();
+            result.Errors[0].Message.Should().BeSameAs(CsvDataService.ErrorMessages.FileNotFound);
         }
 
-        [Theory(DisplayName = "Ensure Constructor Exception When Empty FileLocation"), AutoData]
-        public void Ensure_ConstructorException_WhenEmptyFileLocation(TimeSeriesDatasetMapDefinition jsonFileMap)
+        [Fact(DisplayName = "Ensure Error When Invalid Data Type for Timestamp Column")]
+        public void Ensure_Error_WhenInvalidDataTypeforTimestampColumn()
         {
-            Action action = () => { new CsvDataService(jsonFileMap, ""); };
-            action.Should().Throw<ArgumentNullException>();
+            // arrange //
+            var map = new TimeSeriesDatasetMapDefinition(
+                timestampColumn: new DataEndpoint() { DataType = typeof(int), Name = "Date" },
+                keyColumn: new DataEndpoint() { DataType = typeof(string), Name = "Email" },
+                endpoints: new List<DataEndpoint>());
+            var sut = new CsvDataService();
+
+            // act //
+            var result = sut.ValidateFileMap(map);
+
+            // assert //
+            result.IsFailed.Should().BeTrue();
+            result.Errors[0].Message.Should().BeEquivalentTo(CsvDataService.ErrorMessages.InvalidColumnDataTypeColumn(typeof(int).ToString(), "TimestampColumn"));
+        }
+
+        [Fact(DisplayName = "Ensure ValidateFilemap can return more than one error")]
+        public void EnsureValidateFilemapCanReturnMoreThanOneError()
+        {
+            // arrange //
+            var map = new TimeSeriesDatasetMapDefinition( hasHeader: false,
+                timestampColumn: new DataEndpoint() { DataType = typeof(int), Name = "Date" },
+                keyColumn: new DataEndpoint() { DataType = typeof(string), Name = "Email" },
+                endpoints: new List<DataEndpoint>());
+            var sut = new CsvDataService();
+
+            // act //
+            var result = sut.ValidateFileMap(map);
+
+            // assert //
+            result.IsFailed.Should().BeTrue();
+            result.Errors.Count().Should().BeGreaterThan(1);
         }
 
         [Theory(DisplayName = "Ensure Error When Mismatch Key Header")]
@@ -60,14 +94,14 @@ namespace CsvDataParser.Test
         {
             // arrange //
             var map = GetSeriesDatasetMapHeaderFile();
-            var sut = new CsvDataService(map, fileLocation);
+            var sut = new CsvDataService();
 
             // act //
-            var parseResult = sut.RetrieveFlatCsvData();
+            var data = sut.RetrieveDataFromFile(map, fileLocation);
 
             //assert //
-            parseResult.Errors.Should().HaveCount(1);
-            parseResult.Errors[0].Message.Should().BeSameAs(CsvDataService.ErrorMessages.MissingKeyColumn);
+            data.Where(x=>x.IsFailed).Count().Should().Be(1);
+            data.Where(x=>x.IsFailed).First().Errors[0].Message.Should().BeSameAs(CsvDataService.ErrorMessages.MissingKeyColumn);
         }
 
         [Theory(DisplayName = "Ensure Error When Mismatch Timestamp Header")]
@@ -76,14 +110,14 @@ namespace CsvDataParser.Test
         {
             // arrange //
             var map = GetSeriesDatasetMapHeaderFile();
-            var sut = new CsvDataService(map, fileLocation);
+            var sut = new CsvDataService();
 
             // act //
-            var parseResult = sut.RetrieveFlatCsvData();
+            var data = sut.RetrieveDataFromFile(map, fileLocation);
 
             //assert //
-            parseResult.Errors.Should().HaveCount(1);
-            parseResult.Errors[0].Message.Should().BeSameAs(CsvDataService.ErrorMessages.MissingTimestampColumn);
+            data.Where(x => x.IsFailed).Count().Should().Be(1);
+            data.Where(x => x.IsFailed).First().Errors[0].Message.Should().BeSameAs(CsvDataService.ErrorMessages.MissingTimestampColumn);
         }
 
         [Theory(DisplayName = "Ensure Success When Valid File")]
@@ -92,14 +126,14 @@ namespace CsvDataParser.Test
         {
             // arrange //
             var map = GetSeriesDatasetMapHeaderFile();
-            var sut = new CsvDataService(map, fileLocation);
+            var sut = new CsvDataService();
 
             // act //
-            var parseResult = sut.RetrieveFlatCsvData();
+            var parseResult = sut.RetrieveDataFromFile(map, fileLocation);
 
             //assert //
-            parseResult.Errors.Should().HaveCount(0);
-            parseResult.Value.Should().NotBeNullOrEmpty();
+            parseResult.Where(x=>x.IsFailed).Count().Should().Be(0);
+            parseResult.Where(x=>x.IsSuccess).Should().NotBeNullOrEmpty();
         }
 
         [Theory(DisplayName = "Ensure Error When Invalid Decimal Value")]
@@ -108,14 +142,14 @@ namespace CsvDataParser.Test
         {
             // arrange //
             var map = GetSeriesDatasetMapHeaderFile();
-            var sut = new CsvDataService(map, fileLocation);
+            var sut = new CsvDataService();
 
             // act //
-            var parseResult = sut.RetrieveFlatCsvData();
+            var parseResult = sut.RetrieveDataFromFile(map, fileLocation);
 
             //assert //
-            parseResult.Errors.Should().HaveCount(1);
-            parseResult.Errors[0].Message.Should().BeEquivalentTo(CsvDataService.ErrorMessages.EndpointColumnParse("DecimalValue"));
+            parseResult.Where(x => x.IsFailed).Count().Should().Be(1);
+            parseResult.Where(x => x.IsFailed).First().Errors[0].Message.Should().BeEquivalentTo(CsvDataService.ErrorMessages.EndpointColumnParse("DecimalValue"));
         }
 
         [Theory(DisplayName = "Ensure Error When Invalid Decimal Header")]
@@ -124,14 +158,14 @@ namespace CsvDataParser.Test
         {
             // arrange //
             var map = GetSeriesDatasetMapHeaderFile();
-            var sut = new CsvDataService(map, fileLocation);
+            var sut = new CsvDataService();
 
             // act //
-            var parseResult = sut.RetrieveFlatCsvData();
+            var parseResult = sut.RetrieveDataFromFile(map, fileLocation);
 
             //assert //
-            parseResult.Errors.Should().HaveCount(1);
-            parseResult.Errors[0].Message.Should().BeEquivalentTo(CsvDataService.ErrorMessages.EndpointColumnParse("DecimalValue"));
+            parseResult.Where(x => x.IsFailed).Count().Should().Be(1);
+            parseResult.Where(x => x.IsFailed).First().Errors[0].Message.Should().BeEquivalentTo(CsvDataService.ErrorMessages.EndpointColumnParse("DecimalValue"));
         }
 
         [Theory(DisplayName = "Ensure Error When No Header Present")]
@@ -140,14 +174,14 @@ namespace CsvDataParser.Test
         {
             // arrange //
             var map = GetSeriesDatasetMapNoHeaderFile();
-            var sut = new CsvDataService(map, fileLocation);
+            var sut = new CsvDataService();
 
             // act //
-            var parseResult = sut.RetrieveFlatCsvData();
+            var parseResult = sut.RetrieveDataFromFile(map, fileLocation);
 
             //assert //
-            parseResult.Errors.Should().HaveCount(0);
-            parseResult.Value.Should().HaveCountGreaterThan(0);
+            parseResult.Where(x => x.IsFailed).Should().HaveCount(0);
+            parseResult.Where(x => x.IsSuccess).Should().HaveCountGreaterThan(0);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CsvDataParser.Models
 {
@@ -6,7 +7,6 @@ namespace CsvDataParser.Models
     {
         public TimeSeriesDatasetMapDefinition() { }
 
-        [SetsRequiredMembers]
         public TimeSeriesDatasetMapDefinition(DataEndpoint timestampColumn, DataEndpoint keyColumn, List<DataEndpoint> endpoints, bool hasHeader = true)
         {
             TimestampColumn = timestampColumn;
@@ -17,9 +17,9 @@ namespace CsvDataParser.Models
 
         public bool HasHeader { get; set; }
 
-        public required DataEndpoint TimestampColumn { get; set; }
-        public required DataEndpoint KeyColumn { get; set; }
-        public required List<DataEndpoint> Endpoints { get; set; }
+        public DataEndpoint TimestampColumn { get; set; }
+        public DataEndpoint KeyColumn { get; set; }
+        public List<DataEndpoint> Endpoints { get; set; }
 
     }
 }
